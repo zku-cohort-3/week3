@@ -10,8 +10,9 @@ template HitAndBlow() {
     signal input pubGuessB;
     signal input pubGuessC;
     signal input pubGuessD;
-    signal input pubNumHit;
-    signal input pubNumBlow;
+    
+    signal input pubNumWhites;
+    signal input pubNumBlacks;
     signal input pubSolnHash;
 
     // Private inputs
@@ -19,7 +20,7 @@ template HitAndBlow() {
     signal input privSolnB;
     signal input privSolnC;
     signal input privSolnD;
-    signal input privSalt;
+    signal input privSaltedSoln;
 
     // Output
     signal output solnHashOut;
@@ -77,19 +78,19 @@ template HitAndBlow() {
 
     // Create a constraint around the number of hit
     component equalHit = IsEqual();
-    equalHit.in[0] <== pubNumHit;
+    equalHit.in[0] <== pubNumBlacks;
     equalHit.in[1] <== hit;
     equalHit.out === 1;
     
     // Create a constraint around the number of blow
     component equalBlow = IsEqual();
-    equalBlow.in[0] <== pubNumBlow;
+    equalBlow.in[0] <== pubNumWhites;
     equalBlow.in[1] <== blow;
     equalBlow.out === 1;
 
     // Verify that the hash of the private solution matches pubSolnHash
     component poseidon = Poseidon(5);
-    poseidon.inputs[0] <== privSalt;
+    poseidon.inputs[0] <== privSaltedSoln;
     poseidon.inputs[1] <== privSolnA;
     poseidon.inputs[2] <== privSolnB;
     poseidon.inputs[3] <== privSolnC;
@@ -99,4 +100,4 @@ template HitAndBlow() {
     pubSolnHash === solnHashOut;
  }
 
- component main {public [pubGuessA, pubGuessB, pubGuessC, pubGuessD, pubNumHit, pubNumBlow, pubSolnHash]} = HitAndBlow();
+ component main {public [pubGuessA, pubGuessB, pubGuessC, pubGuessD, pubNumBlacks, pubNumWhites, pubSolnHash]} = HitAndBlow();
