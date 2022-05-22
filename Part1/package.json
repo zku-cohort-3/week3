@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "circom_tester": "^0.0.11",
+    "circomlibjs": "^0.1.2",
     "ffjavascript": "^0.2.54",
     "snarkjs": "^0.4.16"
   }
