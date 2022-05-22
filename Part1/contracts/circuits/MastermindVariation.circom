@@ -4,7 +4,8 @@ pragma circom 2.0.0;
 
 /*
 	The examples provided are a game where one must guess a 4-digit number - 4 spaces with a range of 10 (0-9) per space.
-	I've chosen to go with a variation of this with 5 spaces, each with a range of 5 (1-5).
+	I've chosen to go with a variation of this with 5 spaces, each with a range of 5 (1-5). This is rather simple, as warm/hot hits will always equal 5.
+	It could be improved by increasing input range, say a combo of 2 digit numbers 22-45-96-5-77. But for now, 1-2-3-4-5 for practice.
 	- Digits must be 1 >= n <= 5
 	- Each must be unique and not repeated
 	Valid solutions/guesses:
@@ -17,7 +18,6 @@ pragma circom 2.0.0;
 		1 2 3
 */
 
-
 include "../../node_modules/circomlib/circuits/comparators.circom";
 include "../../node_modules/circomlib/circuits/bitify.circom";
 include "../../node_modules/circomlib/circuits/poseidon.circom";
@@ -26,7 +26,7 @@ include "./RangeProof.circom";
 /**
 	This circuit checks for valid mastermind guesses and solutions and checks for accuracy of the guesses solving for the solution.
 */
-template MastermindVariation() {
+template MastermindFive() {
 	// Public inputs
 	signal input publicGuessA;
 	signal input publicGuessB;
@@ -143,5 +143,5 @@ template MastermindVariation() {
 }
 
 // Make our private signals public
-component main {public [publicGuessA, publicGuessB, publicGuessC, publicGuessD, publicHitsHot, publicHitsWarm, pubilcSolutionHash]} = MastermindVariation();
+component main {public [publicGuessA, publicGuessB, publicGuessC, publicGuessD, publicHitsHot, publicHitsWarm, pubilcSolutionHash]} = MastermindFive();
 
