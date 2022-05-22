@@ -10,6 +10,7 @@ template HitAndBlow() {
     signal input pubGuessB;
     signal input pubGuessC;
     signal input pubGuessD;
+
     signal input pubNumHit;
     signal input pubNumBlow;
     signal input pubSolnHash;
@@ -19,6 +20,7 @@ template HitAndBlow() {
     signal input privSolnB;
     signal input privSolnC;
     signal input privSolnD;
+
     signal input privSalt;
 
     // Output
@@ -39,16 +41,19 @@ template HitAndBlow() {
         lessThan[j].in[0] <== guess[j];
         lessThan[j].in[1] <== 10;
         lessThan[j].out === 1;
+        
         lessThan[j+4] = LessThan(4);
         lessThan[j+4].in[0] <== soln[j];
         lessThan[j+4].in[1] <== 10;
         lessThan[j+4].out === 1;
+
         for (k=j+1; k<4; k++) {
             // Create a constraint that the solution and guess digits are unique. no duplication.
             equalGuess[equalIdx] = IsEqual();
             equalGuess[equalIdx].in[0] <== guess[j];
             equalGuess[equalIdx].in[1] <== guess[k];
             equalGuess[equalIdx].out === 0;
+
             equalSoln[equalIdx] = IsEqual();
             equalSoln[equalIdx].in[0] <== soln[j];
             equalSoln[equalIdx].in[1] <== soln[k];

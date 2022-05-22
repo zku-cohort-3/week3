@@ -1,16 +1,58 @@
 //[assignment] write your own unit test to show that your Mastermind variation circuit is working as expected\
-//一旦普通のmasterminfでテストを実行しましょう
 
 const chai = require("chai");
+const { buildPoseidon } = require("circomlibjs");
 
 const wasm_tester = require("circom_tester").wasm;
 const assert = chai.assert;
 
-describe("Super MasterMind Tests", function () {
+describe("MasterMind Tests", function () {
   this.timeout(100000000);
 
-  it("should false wittness", async () => {
-    const circuit = await wasm_tester("contracts/circuits/hitandblow.circom");
+  // it("should true original mastermind", async () => {
+  //   const circuit = await wasm_tester("contracts/circuits/hitandblow.circom");
+  //   await circuit.loadConstraints();
+
+  //   const testCase = {
+  //     guess: ["5", "4", "3", "2"],
+  //     soln: ["5", "4", "3", "2"],
+  //     blowPegs: "4",
+  //     hitPegs: "0",
+  //   };
+  //   console.log(testCase.soln);
+  //   console.log(testCase.soln.length);
+
+  //   const poseidon = await buildPoseidon();
+  //   const poseidonHash = poseidon(testCase.soln);
+  //   console.log(poseidonHash);
+  //   const hash = poseidon.F.toObject(poseidonHash);
+  //   console.log(hash);
+
+  //   const INPUT = {
+  //     pubGuessA: "5",
+  //     pubGuessB: "4",
+  //     pubGuessC: "3",
+  //     pubGuessD: "2",
+  //     pubNumHit: "4",
+  //     pubNumBlow: "0",
+  //     pubSolnHash:
+  //       "1495238578116584814691438460316833932729105699599396707152918206731739541468",
+
+  //     privSolnA: "5",
+  //     privSolnB: "4",
+  //     privSolnC: "3",
+  //     privSolnD: "2",
+  //     privSalt: "12354",
+  //   };
+
+  //   const witness = await circuit.calculateWitness(INPUT);
+  //   assert.equal(witness[0], 1n);
+  // });
+
+  it("should true wittness", async () => {
+    const circuit = await wasm_tester(
+      "contracts/circuits/MastermindVariation.circom"
+    );
     await circuit.loadConstraints();
 
     const INPUT = {
@@ -18,19 +60,23 @@ describe("Super MasterMind Tests", function () {
       pubGuessB: "4",
       pubGuessC: "3",
       pubGuessD: "2",
-      pubNumHit: "4",
+      pubGuessE: "1",
+
+      pubNumHit: "5",
       pubNumBlow: "0",
       pubSolnHash:
-        "13630663015064836160108906220859308498479326522620485278897182547087795876906",
+        "11645460396676660026079729241894520513777884186412360415867506828064962469608",
+
       privSolnA: "5",
       privSolnB: "4",
       privSolnC: "3",
       privSolnD: "2",
-      privSalt: "12354",
+      privSolnE: "1",
+      privSalt: "12345",
     };
 
-    const witness = await circuit.calculateWitness(INPUT);
-    console.log("witness = ", witness);
+    const witness = await circuit.calculateWitness(INPUT, true);
+    console.log(witness);
     assert.equal(witness[0], 1n);
   });
 });
