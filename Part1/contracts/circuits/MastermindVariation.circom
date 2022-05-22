@@ -35,7 +35,7 @@ template MastermindFive() {
 	signal input publicGuessE;
 	signal input publicHitsHot; // correct digit in correct space
 	signal input publicHitsWarm; // correct digit in incorrect space
-	signal input pubilcSolutionHash;
+	signal input publicSolutionHash;
 
 	// Private inputs
 	signal input privateSolutionA;
@@ -130,7 +130,7 @@ template MastermindFive() {
 	isAccurateHotHits.out === 1;
 	isAccurateWarmHits.out === 1;
 
-	// Verify that the hash of the private solution matches pubilcSolutionHash
+	// Verify that the hash of the private solution matches publicSolutionHash
 	component poseidon = Poseidon(6);
 	poseidon.inputs[0] <== privateSolutionA;
 	poseidon.inputs[1] <== privateSolutionB;
@@ -139,9 +139,9 @@ template MastermindFive() {
 	poseidon.inputs[4] <== privateSolutionE;
 	poseidon.inputs[5] <== privateSalt; // use the private salt
 	solutionHashOut <== poseidon.out; // should be a valid poseidon hash
-	pubilcSolutionHash === solutionHashOut; // should match the public hash
+	publicSolutionHash === solutionHashOut; // should match the public hash
 }
 
 // Make our private signals public
-component main {public [publicGuessA, publicGuessB, publicGuessC, publicGuessD, publicHitsHot, publicHitsWarm, pubilcSolutionHash]} = MastermindFive();
+component main {public [publicGuessA, publicGuessB, publicGuessC, publicGuessD, publicHitsHot, publicHitsWarm, publicSolutionHash]} = MastermindFive();
 

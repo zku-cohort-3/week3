@@ -13,8 +13,8 @@ const Fr = new F1Field(exports.p)
 
 describe('MastermindFive Circuit', function () {
 	const CONTRACT_PATH = path.join(__dirname, '../contracts/circuits', 'MastermindVariation.circom')
-	// this.timeout(100000000)
-	this.timeout(100000)
+	this.timeout(100000000)
+	// this.timeout(100000)
 	let circuit, poseidon
 
 	beforeEach(async () => {
@@ -33,8 +33,10 @@ describe('MastermindFive Circuit', function () {
 	it('Should verify that guesses and solutions are of unique values', async () => {
 		const guess = [1, 2, 3, 4, 5]
 		const solution = [5, 2, 1, 4, 3] // 2 hot, 3 warm
-		const salt = ethers.BigNumber.from(ethers.utils.randomBytes(32))
-		const solutionHash = ethers.BigNumber.from(Fr.toObject(poseidon([...solution, salt])))
+		const salt = ethers.BigNumber.from(ethers.utils.randomBytes(32)).toString()
+		const solutionHash = ethers.BigNumber.from(
+			Fr.toObject(poseidon([...solution, salt])),
+		).toString()
 		const input = {
 			publicGuessA: guess[0],
 			publicGuessB: guess[1],
@@ -53,7 +55,7 @@ describe('MastermindFive Circuit', function () {
 			privateSalt: salt,
 		}
 		const witness = await circuit.calculateWitness(input, true)
-
+		console.log(witness)
 		// assert(Fr.eq(Fr.e(witness[0]), Fr.e(1)))
 		// assert(Fr.eq(Fr.e(witness[1]), Fr.e(1)))
 
