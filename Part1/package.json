@@ -14,6 +14,7 @@
   },
   "scripts": {
     "compile": ". scripts/compile-circuit.sh",
-    "test": "node scripts/bump-solidity.js && npx hardhat test"
+    "test": "node scripts/bump-solidity.js && npx hardhat test",
+    "build": "npm run compile && npm t"
   }
 }

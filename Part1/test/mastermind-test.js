@@ -1,46 +1,40 @@
 //[assignment] write your own unit test to show that your Mastermind variation circuit is working as expected
-const chai = require('chai')
 const path = require('path')
-
-const assert = chai.assert
-const wasm_tester = require('circom_tester').wasm
 const F1Field = require('ffjavascript').F1Field
 const Scalar = require('ffjavascript').Scalar
-const buildPoseidon = require('circomlibjs').buildPoseidon
+const { buildPoseidon } = require('circomlibjs')
+const { assert } = require('chai')
+const { wasm } = require('circom_tester')
 
 exports.p = Scalar.fromString(
 	'21888242871839275222246405745257275088548364400416034343698204186575808495617',
 )
-
 const Fr = new F1Field(exports.p)
-const CONTRACT_PATH = path.join(__dirname, '../contracts/circuits', 'MastermindVariation.circom')
 
 describe('MastermindFive Circuit', function () {
-	this.timeout(100000000)
-	let circuit
-	let poseidon
+	const CONTRACT_PATH = path.join(__dirname, '../contracts/circuits', 'MastermindVariation.circom')
+	// this.timeout(100000000)
+	this.timeout(100000)
+	let circuit, poseidon
 
 	beforeEach(async () => {
 		// Instantiate contract
-		circuit = await wasm_tester(CONTRACT_PATH)
+		circuit = await wasm(CONTRACT_PATH)
 		await circuit.loadConstraints()
-		// Build poseidon
 		poseidon = await buildPoseidon()
 	})
 
-	it.only('Should have the right number of constraints', () => {
-		console.log(circuit)
+	it('Should have the right number of constraints', () => {
 		assert.isNotNull(circuit)
-		// assert.equal(circuit.nVars, 2)
-		// assert.equal(circuit.constraints.length, 1)
+		assert.equal(circuit.nVars, 519)
+		assert.equal(circuit.constraints.length, 535)
 	})
 
 	it('Should verify that guesses and solutions are of unique values', async () => {
 		const guess = [1, 2, 3, 4, 5]
-		const wrong = [2, 2, 3, 4, 4]
 		const solution = [5, 2, 1, 4, 3] // 2 hot, 3 warm
 		const salt = ethers.BigNumber.from(ethers.utils.randomBytes(32))
-		const solutionHash = ethers.BigNumber.from(poseidon.F.toObject(poseidon([...solution2, salt])))
+		const solutionHash = ethers.BigNumber.from(Fr.toObject(poseidon([...solution, salt])))
 		const input = {
 			publicGuessA: guess[0],
 			publicGuessB: guess[1],
@@ -50,6 +44,7 @@ describe('MastermindFive Circuit', function () {
 			publicHitsHot: 2,
 			publicHitsWarm: 3,
 			publicSolutionHash: solutionHash,
+			//	private vars
 			privateSolutionA: solution[0],
 			privateSolutionB: solution[1],
 			privateSolutionC: solution[2],
@@ -57,15 +52,16 @@ describe('MastermindFive Circuit', function () {
 			privateSolutionE: solution[4],
 			privateSalt: salt,
 		}
-
 		const witness = await circuit.calculateWitness(input, true)
-		console.log(witness)
 
 		// assert(Fr.eq(Fr.e(witness[0]), Fr.e(1)))
 		// assert(Fr.eq(Fr.e(witness[1]), Fr.e(1)))
+
+		// Incorrect guess, should fail
+		const wrong = [2, 2, 3, 4, 4]
 	})
 
-	it.skip('Should verify that guesses and solutions are between numbers 1 and 5', async () => {})
+	// it.skip('Should verify that guesses and solutions are between numbers 1 and 5', async () => {})
 })
 
 // ========== FOR REFERENCE ==========
