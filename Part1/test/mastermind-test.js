@@ -1,10 +1,16 @@
 //[assignment] write your own unit test to show that your Mastermind variation circuit is working as expected\
 
 const chai = require("chai");
-const { buildPoseidon } = require("circomlibjs");
 
 const wasm_tester = require("circom_tester").wasm;
 const assert = chai.assert;
+
+const F1Field = require("ffjavascript").F1Field;
+const Scalar = require("ffjavascript").Scalar;
+exports.p = Scalar.fromString(
+  "21888242871839275222246405745257275088548364400416034343698204186575808495617"
+);
+const Fr = new F1Field(exports.p);
 
 describe("MasterMind Tests", function () {
   this.timeout(100000000);
@@ -75,8 +81,8 @@ describe("MasterMind Tests", function () {
       privSalt: "12345",
     };
 
-    const witness = await circuit.calculateWitness(INPUT, true);
-    console.log(witness);
+    const witness = await circuit.calculateWitness(INPUT);
+    assert(Fr.eq(Fr.e(witness[0]), Fr.e(1)));
     assert.equal(witness[0], 1n);
   });
 });
