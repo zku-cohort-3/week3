@@ -55,15 +55,15 @@ describe('MastermindFive Circuit', function () {
 			privateSalt: salt,
 		}
 		const witness = await circuit.calculateWitness(input, true)
-		console.log(witness)
-		// assert(Fr.eq(Fr.e(witness[0]), Fr.e(1)))
-		// assert(Fr.eq(Fr.e(witness[1]), Fr.e(1)))
+		assert(Fr.eq(Fr.e(witness[0]), Fr.e(1)))
+		assert(Fr.eq(Fr.e(witness[1]), Fr.e(1)))
 
+		// TODO: Test for invalid inputs
 		// Incorrect guess, should fail
-		const wrong = [2, 2, 3, 4, 4]
+		// const wrong = [2, 2, 3, 4, 4]
 	})
 
-	// it.skip('Should verify that guesses and solutions are between numbers 1 and 5', async () => {})
+	it.skip('Should verify that guesses and solutions are between numbers 1 and 5', async () => {})
 })
 
 // ========== FOR REFERENCE ==========
