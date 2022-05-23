@@ -241,13 +241,12 @@ const encrypt = async (
   // [assignment] generate the IV, use Mimc7 to hash the shared key with the IV, then encrypt the plain text
     // Generate the IV
     const iv = mimc7.getIV()
+    // Map over plaintext data and hash it with the iv and shared key, and encrypt it
     const data = plaintext.map((e: bigint, i: number): bigint => e + buf2Bigint(mimc7.hash(sharedKey, iv + BigInt(i))))
-
     const ciphertext: Ciphertext = {
         iv,
         data,
     }
-
     return ciphertext
 };
 
@@ -261,6 +260,7 @@ const decrypt = async (
 ): Promise<Plaintext> => {
   // [assignment] use Mimc7 to hash the shared key with the IV, then descrypt the ciphertext
   const mimc7 = await buildMimc7();
+  // Map over the encrypted data and decrypt it using the hash, return it as decrypted data
   return ciphertext.data.map((e: bigint, i: number): bigint => e - buf2Bigint(mimc7.hash(sharedKey, ciphertext.iv + BigInt(i))))
 };
 
